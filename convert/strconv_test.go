@@ -34,3 +34,34 @@ func BenchmarkQuote(b *testing.B) {
 		}
 	})
 }
+
+func TestUnquote(t *testing.T) {
+	data := map[string]struct {
+		Test     string
+		Expected string
+	}{
+		"t1": {"\"ab\"", "ab"},
+	}
+	for name, cas := range data {
+		res, cancel, err := Unquote(cas.Test)
+		if err != nil || res != cas.Expected {
+			t.Fatalf("case %s failed: expected: %s, but got: %s", name, cas.Expected, res)
+		}
+		cancel()
+	}
+}
+
+func BenchmarkUnquote(b *testing.B) {
+	b.ReportAllocs()
+	expected := "ab"
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			buf, cancel, err := Unquote("\"ab\"")
+			// do something
+			if err != nil || buf != expected {
+				b.Fatalf("expected: %s, but got: %s", expected, buf)
+			}
+			cancel()
+		}
+	})
+}
