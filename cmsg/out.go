@@ -1,8 +1,8 @@
+// +build !windows
+
 package cmsg
 
 import "fmt"
-
-// +build !windows
 
 // These contanstants map to color codes for shell scripts making them
 // human readable.
